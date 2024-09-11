@@ -203,6 +203,8 @@ namespace HybridCLR.Editor.Commands
         private static void CopyIDEDllAotAssemblies(BuildTarget target)
         {
             var externalDirs = HybridCLRSettings.Instance.externalHotUpdateAssembliyDirs;
+            var patchAOTAssemblies = HybridCLRSettings.Instance.patchAOTAssemblies;
+
             var dstPath = SettingsUtil.GetAssembliesPostIl2CppStripDir(target);
             List<string> allHotUpdateDllNames = SettingsUtil.HotUpdateAssemblyNamesExcludePreserved;
  
@@ -214,7 +216,7 @@ namespace HybridCLR.Editor.Commands
                 {
                     string fileouExt  = Path.GetFileNameWithoutExtension(fp.FullName);
                     string file = fp.Name;
-                    if (allHotUpdateDllNames.Contains(fileouExt))
+                    if (allHotUpdateDllNames.Contains(fileouExt) || !patchAOTAssemblies.Contains(fileouExt))
                     {
                         Debug.Log($"[CopyIDEDllAotAssemblies] 过滤热更新assembly:{file}");
                         continue;
