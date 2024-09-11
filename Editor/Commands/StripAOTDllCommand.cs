@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using static UnityEngine.Networking.UnityWebRequest;
+using HybridCLR.Editor.Meta;
+using HybridCLR.Editor.Settings;
 
 namespace HybridCLR.Editor.Commands
 {
