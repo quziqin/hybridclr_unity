@@ -21,7 +21,6 @@ namespace HybridCLR.Editor.Commands
         public static void GenerateStripedAOTDlls()
         {
             GenerateStripedAOTDlls(EditorUserBuildSettings.activeBuildTarget);
-            CopyIDEDllAotAssemblies(EditorUserBuildSettings.activeBuildTarget);
         }
 
         static BuildOptions GetBuildPlayerOptions(BuildTarget buildTarget)
@@ -194,6 +193,8 @@ namespace HybridCLR.Editor.Commands
                 }
             }
             Debug.Log($"GenerateStripedAOTDlls target:{target} path:{outputPath}");
+
+            CopyIDEDllAotAssemblies(target);
         }
 
         /// <summary>
