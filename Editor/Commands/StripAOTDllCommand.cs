@@ -19,6 +19,7 @@ namespace HybridCLR.Editor.Commands
         public static void GenerateStripedAOTDlls()
         {
             GenerateStripedAOTDlls(EditorUserBuildSettings.activeBuildTarget);
+            CopyIDEDllAotAssemblies(EditorUserBuildSettings.activeBuildTarget);
         }
 
         static BuildOptions GetBuildPlayerOptions(BuildTarget buildTarget)
@@ -191,6 +192,34 @@ namespace HybridCLR.Editor.Commands
                 }
             }
             Debug.Log($"GenerateStripedAOTDlls target:{target} path:{outputPath}");
+        }
+
+        /// <summary>
+        /// 拷贝自定义 热更新下的dll到 hybridclr可识别的aot目录下
+        /// </summary>
+        private static void CopyIDEDllAotAssemblies(BuildTarget target)
+        {
+            var externalDirs = HybridCLRSettings.Instance.externalHotUpdateAssembliyDirs;
+            var dstPath = SettingsUtil.GetAssembliesPostIl2CppStripDir(target);
+            List<string> allHotUpdateDllNames = SettingsUtil.HotUpdateAssemblyNamesExcludePreserved;
+ 
+            foreach (var dir in externalDirs)
+            {
+                DirectoryInfo root = new DirectoryInfo(dir);
+                FileInfo[] files = root.GetFiles("*.dll");
+                foreach (var fp in files)
+                {
+                    string fileouExt  = Path.GetFileNameWithoutExtension(fp.FullName);
+                    string file = fp.Name;
+                    if (allHotUpdateDllNames.Contains(fileouExt))
+                    {
+                        Debug.Log($"[CopyIDEDllAotAssemblies] 过滤热更新assembly:{file}");
+                        continue;
+                    }
+                    Debug.Log($"[CopyIDEDllAotAssemblies] copy strip dll :{fp.FullName} ===>>> :{dstPath}/{file}");
+                    File.Copy($"{fp.FullName}", $"{dstPath}/{file}", true);
+                }
+            }
         }
     }
 }
